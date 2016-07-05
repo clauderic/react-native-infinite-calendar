@@ -1,0 +1,28 @@
+{
+  "name": "react-native-infinite-calendar",
+  "version": "0.0.1",
+  "description": "React Native port of react-infinite-calendar.",
+  "author": {
+    "name": "Clauderic Demers",
+    "email": "me@ced.io"
+  },
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clauderic/react-native-infinite-calendar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/clauderic/react-native-infinite-calendar/issues"
+  },
+  "dependencies": {
+    "lodash": "^4.13.1",
+    "moment": "^2.13.0",
+    "moment-range": "^2.2.0",
+    "react": "15.2.0",
+    "react-native": "0.28.0"
+  }
+}
