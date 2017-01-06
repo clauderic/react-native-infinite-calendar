@@ -85,7 +85,7 @@ export default class Calendar extends Component {
                     dataSource={this.state.dataSource}
                     renderRow={this._renderRow}
                     onScroll={this._handleScroll}
-                    // contentOffset={{y: this.getDateOffset(this._today.date)}}
+                    contentOffset={{y: this.getDateOffset(this._today.date)}}
                 />
             </View>
         );
