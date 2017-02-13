@@ -1,63 +1,62 @@
-import moment from 'moment';
-import 'moment-range';
+import getDaysInMonth from 'date-fns/get_days_in_month';
+import getDay from 'date-fns/get_day';
 
-export function getMonthsForYear(year, min, max) {
-    let months;
+export function getMonth(year, month, weekStartsOn = 0) {
+  let rows = [];
+  let monthDate = new Date(year, month, 1);
+  let daysInMonth = getDaysInMonth(monthDate);
+  let dow = getDay(new Date(year, month, 1));
+  let weekEndsOn = weekStartsOn === 1 ? 0 : 6; // TODO: Change this 😅
 
-    if (min && min.year() == year) {
-        months = moment.range([min, (max && max.year() == year) ? max : moment(min).endOf('year')]);
-    } else if (max && max.year() == year) {
-        months = moment.range([(min && min.year() == year) ? min : moment(year, 'YYYY').startOf('year'), max]);
-    } else if (year) {
-        months = moment(year, 'YYYY').range('year');
-    } else {
-        months = moment().range('year');
+  let week = 0;
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    if (!rows[week]) {
+      rows[week] = [];
     }
 
-    return months.toArray('months');
-}
+    rows[week].push(day);
 
-export function parseDate (date) {
-    if (date) {
-        if (!date._isAMomentObject) date = moment(date);
-
-        return {
-            date,
-            yyyymmdd: date.format('YYYYMMDD')
-        }
+    if (dow === weekEndsOn) {
+      week++;
     }
+
+    dow = dow < 6 ? dow + 1 : 0;
+  }
+
+  return {
+    date: monthDate,
+    rows
+  };
 }
 
-export function getMonth(monthDate) {
-	let rows = {};
-	let daysInMonth = monthDate.daysInMonth();
-	let year = monthDate.year();
-	let month = monthDate.month();
+function getWeek(year, date, weekStartsOn) {
+  var yearStart = new Date(year, 0, 1); // 1st Jan of the Year
 
-	let week, date, lastWeekVal;
-	let weekIndex = -1;
+  return Math.ceil(
+    ((date - yearStart) / 86400000 + yearStart.getDay() + 1 - weekStartsOn) / 7
+  );
+}
 
-	for (let i = 0; i < daysInMonth; i++) {
-		date = moment(new Date(year,month,i+1));
-		week = date.week();
+export function getWeeksInMonth(
+  month,
+  year = new Date().getFullYear(),
+  weekStartsOn = 0
+) {
+  let weekEndsOn = weekStartsOn === 1 ? 0 : 6; // TODO: Change this 😅
 
-		if (week !== lastWeekVal) {
-			lastWeekVal = week;
-			weekIndex++;
-		}
+  var first_day_of_month = new Date(year, month, 1);
+  var first_week_number = getWeek(year, first_day_of_month, weekStartsOn);
 
-		if (!rows[weekIndex]) {
-			rows[weekIndex] = [];
-		}
+  var last_day_of_month = new Date(year, month + 1, 0); // Last date of the Month
+  var last_week_number = getWeek(year, last_day_of_month, weekStartsOn);
 
-		rows[weekIndex].push({
-			date,
-			yyyymmdd: date.format('YYYYMMDD')
-		});
-	}
+  let rowCount = last_week_number - first_week_number;
 
-	return {
-		date: monthDate,
-		rows: Object.keys(rows).map((row) => rows[row])
-	};
+  // If the last week contains 7 days, we need to add an extra row
+  if (last_day_of_month.getDay() === weekEndsOn) {
+    rowCount++;
+  }
+
+  return rowCount;
 }
