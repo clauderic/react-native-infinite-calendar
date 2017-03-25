@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {StyleSheet, View} from 'react-native';
-import FlatList from 'react-native/Libraries/Experimental/FlatList';
+import {FlatList, StyleSheet, View} from 'react-native';
 import Month from './Month';
 import Header from './Header';
 
